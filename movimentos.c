@@ -337,7 +337,7 @@ elemento_t * percorre_diagonalBaixoDireita(matriz_t * m, elemento_t * e, int cor
 /*funcao que move a torre ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
     elemento_t * e = matriz_obter_elemento(m, col, linha); //recebe o endereco da casa destino do movimento 
-    elemento_t * aux = NULL, * aux1;
+    elemento_t * aux = NULL;
 
     int cor_torre;
     char cor_adversario, cor_dele;
@@ -361,6 +361,8 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
         if(e->peca != cor_adversario) /*se na casa de destino nao tem uma peca adversaria*/
             exit(1); 
     }
+
+    /*o aux chama a funcao parar percorrer, se houver algum retorno, a peca foi encontrada, entao eh realizado a troca entre a casa de destino e a casa da peca*/
 
     aux = percorre_abaixo(m, e, cor_torre, 8, movimento, jogadaAtual);
     if(aux != 0) {
@@ -435,6 +437,8 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
             exit(1); 
     }
 
+    /*o aux chama a funcao parar percorrer, se houver algum retorno, a peca foi encontrada, entao eh realizado a troca entre a casa de destino e a casa da peca*/
+
     aux = percorre_diagonalBaixoDireita(m, e, cor_bispo, 8, movimento, jogadaAtual);
     if(aux != 0) { 
         e->macro_peca = aux->macro_peca;
@@ -471,17 +475,15 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
         return m;
     }
 
-    // CASO N CONSIGA MOVER NENHUMA TORRE FECHAR O PROGRAMA
-    // N ESQUECA
     if(aux == NULL) {
         printf("ATENCAO: Bispo nao encontrado!\n");
         exit(1);
     }
-    return m;
 
 }
 
 
+/*funcao que move a rainha ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
@@ -501,8 +503,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
     }
 
     //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
-    //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
-    if(movimento == 1 || movimento == 2 || movimento == 3) { //se for movimento normal
+    if(movimento == 1 || movimento == 2 || movimento == 3) { //se for movimento normal, a casa de destino deve estar vazia
         if(e->macro_peca != e->cor) //se a casa nao tiver vazia
             exit(1);
         
@@ -510,6 +511,8 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
         if(e->peca != cor_adversario) //se na casa de destino nao tem uma peca adversaria
             exit(1); 
     }
+
+    /*o aux chama a funcao parar percorrer, se houver algum retorno, a peca foi encontrada, entao eh realizado a troca entre a casa de destino e a casa da peca*/
 
     aux = percorre_abaixo(m, e, cor_rainha, 8, movimento, jogadaAtual);
     if(aux != 0) {
@@ -592,254 +595,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 }
 
 
-matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
-    elemento_t * e = matriz_obter_elemento(m, col, linha);
-    elemento_t * aux = NULL;
-    int qtd_casas = 0;
-    char cor_adversario, cor_dele; //DEPOIS VER ISSOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-
-    if(movimento == 1 || movimento == 8) { // se for movimento normal
-        if(cor_peca == 99) { //se for PEAO BRANCO
-            cor_adversario = 'P';
-            cor_dele = 'B';
-
-            //movendo peao branco
-            if(linha == 4)  //o peao pode pular duas casas ainda
-                qtd_casas = 2;    
-            else 
-                qtd_casas = 1;
-            
-            aux = percorre_abaixo(m, e, PEAO_BRANCO, qtd_casas, movimento, jogadaAtual);
-            if(aux != 0) { 
-                aux->macro_peca = aux->cor;
-                aux->peca = ' ';
-                e->macro_peca = PEAO_BRANCO;
-                e->peca = cor_dele;
-
-                if(movimento == 8) {
-                    if(jogadaAtual[3] == 'R') {
-                        e->macro_peca = TORRE_BRANCA;
-                    }
-                    else if(jogadaAtual[3] == 'Q') {
-                        e->macro_peca = RAINHA_BRANCA;
-                    }
-                    else if(jogadaAtual[3] == 'B') {
-                        e->macro_peca = BISPO_BRANCO;
-                    }
-                    else if(jogadaAtual[3] == 'N') {
-                        e->macro_peca = CAVALO_BRANCO;
-                    }
-                    else { 
-                        printf("Nao foi possivel realizar a promocao do peao.\n");
-                        exit(1);
-                    }
-                }
-            }
-
-        } else { //se for PEAO PRETO
-            cor_adversario = 'B';
-            cor_dele = 'P';
-
-            if(linha == 3)
-                qtd_casas = 2;
-            else
-                qtd_casas = 1;
-            
-            aux = percorre_cima(m, e, PEAO_PRETO, qtd_casas, movimento, jogadaAtual);
-            if(aux != 0) {
-                aux->macro_peca = aux->cor;
-                aux->peca = ' ';
-                e->macro_peca = PEAO_PRETO;
-                e->peca = cor_dele;
-
-                if(movimento == 8) {
-                    if(jogadaAtual[3] == 'R') {
-                        e->macro_peca = TORRE_PRETA;
-                    }
-                    else if(jogadaAtual[3] == 'Q') {
-                        e->macro_peca = RAINHA_PRETA;
-                    }
-                    else if(jogadaAtual[3] == 'B') {
-                        e->macro_peca = BISPO_PRETO;
-                    }
-                    else if(jogadaAtual[3] == 'N') {
-                        e->macro_peca = CAVALO_PRETO;
-                    }
-                    else { 
-                        printf("Nao foi possivel realizar a promocao do peao.\n");
-                        exit(1);
-                    }
-                }
-            }
-        }
-        if(aux == NULL) {
-            printf("ATENCAO: Peao nao encontrado!\n");
-            exit(1);
-        }
-        return m;
-    }
-
-    else if(movimento == 4 || movimento == 7) { // se for CAPTURA DE PEAO
-        //primeiro identifica de qual coluna o peao que come vai vir
-
-        if(cor_peca == 99) { //se for jogada de BRANCO
-            cor_adversario = 'P';
-            cor_dele = 'B';
-
-            aux = percorre_diagonalBaixoDireita(m, e, PEAO_BRANCO, 1, movimento, jogadaAtual);
-            if(aux != 0) {
-                if (jogadaAtual[0] == aux->colunaT) {
-                    aux->macro_peca = aux->cor;
-                    aux->peca = ' ';
-                    e->macro_peca = PEAO_BRANCO;
-                    e->peca = cor_dele;
-
-                    if(movimento == 7) {
-
-                        if(jogadaAtual[5] == 'R') {
-                            e->macro_peca = TORRE_BRANCA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'Q') {
-                            e->macro_peca = RAINHA_BRANCA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'B') {
-                            e->macro_peca = BISPO_BRANCO;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'N') {
-                            e->macro_peca = CAVALO_BRANCO;
-                            return m;
-                        }
-                        else { 
-                            printf("Nao foi possivel realizar a promocao do peao.\n");
-                            exit(1);
-                        }
-                    }
-
-                    return m;
-                }
-            } 
-
-            aux = percorre_diagonalBaixoEsquerda(m, e, PEAO_BRANCO, 1, movimento, jogadaAtual);
-            if(aux != 0) {            
-                if (jogadaAtual[0] == aux->colunaT) {
-                    aux->macro_peca = aux->cor;
-                    aux->peca = ' ';
-                    e->macro_peca = PEAO_BRANCO;
-                    e->peca = cor_dele;
-
-                    if(movimento == 7) {
-
-                        if(jogadaAtual[5] == 'R') {
-                            e->macro_peca = TORRE_BRANCA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'Q') {
-                            e->macro_peca = RAINHA_BRANCA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'B') {
-                            e->macro_peca = BISPO_BRANCO;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'N') {
-                            e->macro_peca = CAVALO_BRANCO;
-                            return m;
-                        }
-                        else { 
-                            printf("Nao foi possivel realizar a promocao do peao.\n");
-                            exit(1);
-                        }
-                    }
-
-                    return m;
-                }
-            } 
-
-        } else { //senao eh peao PRETO
-            cor_adversario = 'B';
-            cor_dele = 'P';
-
-            aux = percorre_diagonalCimaDireita(m, e, PEAO_PRETO, 1, movimento, jogadaAtual);
-
-            if(aux != 0) {
-                if (jogadaAtual[0] == aux->colunaT) {
-                    aux->macro_peca = aux->cor;
-                    aux->peca = ' ';
-                    e->macro_peca = PEAO_PRETO;
-                    e->peca = cor_dele;
-
-                    if(movimento == 7) {
-
-                        if(jogadaAtual[5] == 'R') {
-                            e->macro_peca = TORRE_PRETA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'Q') {
-                            e->macro_peca = RAINHA_PRETA;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'B') {
-                            e->macro_peca = BISPO_PRETO;
-                            return m;
-                        }
-                        else if(jogadaAtual[5] == 'N') {
-                            e->macro_peca = CAVALO_PRETO;
-                            return m;
-                        }
-                        else { 
-                            printf("Nao foi possivel realizar a promocao do peao.\n");
-                            exit(1);
-                        }
-                    }
-
-                    return m;
-                }
-            } 
-
-            aux = percorre_diagonalCimaEsquerda(m, e, PEAO_PRETO, 1, movimento, jogadaAtual);
-
-            if(aux != 0) {
-                if (jogadaAtual[0] == aux->colunaT) {
-                    aux->macro_peca = aux->cor;
-                    aux->peca = ' ';
-                    e->macro_peca = PEAO_PRETO;
-                    e->peca = cor_dele;
-
-                    if(movimento == 7) {
-
-                        if(jogadaAtual[5] == 'R') {
-                            e->macro_peca = TORRE_PRETA;
-                        }
-                        else if(jogadaAtual[5] == 'Q') {
-                            e->macro_peca = RAINHA_PRETA;
-                        }
-                        else if(jogadaAtual[5] == 'B') {
-                            e->macro_peca = BISPO_PRETO;
-                        }
-                        else if(jogadaAtual[5] == 'N') {
-                            e->macro_peca = CAVALO_PRETO;
-                        }
-                        else { 
-                            printf("Nao foi possivel realizar a promocao do peao.\n");
-                            exit(1);
-                        }
-                    }
-                    return m;
-                }
-            } 
-        }
-        
-    }
-    if(aux == NULL) {
-        printf("ATENCAO: Peao nao encontrado!\n");
-        exit(1);
-    }
-    return m;
-}
-
+/*funcao que move o cavalo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL, * aux1;
@@ -868,23 +624,16 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
             exit(1); 
     }
 
-    //FALTA REVER TUDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-/*        if(aux->macro_peca == cor_peca) {
-            if(movimento == 1 || movimento == 4) {
-                return aux;
-            }
-
-            else if(movimento == 3 || movimento == 6) {
-                if(aux->linhaT == jogadaAtual[1])
-                    return aux;
-                else return 0;
-            } 
-
-            else if(movimento == 2 || movimento == 5) {
-                if(aux->colunaT == jogadaAtual[1])
-                    return aux;
-                else return 0;
-            } */
+    /*  logica para percorrer a partir da casa de destino procurando o cavalo: 
+        se nao sai fora do tabuleiro (para nao dar falha de segmentacao)
+            se a macro_peca do endereco apontado for o CAVALO procurado
+                se estiver o cavalo encontrado estiver ok com o tipo do movimento
+                    o aux recebe o endereco que contem o cavalo encontrado
+        isso se repete para todos os tipos de movimento, porem so ha uma unica possibilidade que vai fazer o aux receber o endereco
+        ao final, verifica se o movimento eh valido, ou seja, se o aux recebeu algum valor
+        se sim, realiza a troca entre o aux e a casa de destino
+        retorna a matriz
+    */
 
     if(l-2>=0 && c-1>=0) {
         if(e->cima->cima->esquerda->macro_peca == cor_cavalo) {
@@ -903,7 +652,6 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
             }
         }
     }
-
     if(l-2>=0 && c+1<=7) {
         if(e->cima->cima->direita->macro_peca == cor_cavalo) {
             // aux = e->cima->cima->direita;
@@ -1044,6 +792,8 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
     return m;
 }
 
+
+/*funcao que move o rei ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
@@ -1071,6 +821,8 @@ matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimen
         if(e->peca != cor_adversario) //se na casa de destino nao tem uma peca adversaria
             exit(1); 
     }
+
+    /*o aux chama a funcao parar percorrer, se houver algum retorno, a peca foi encontrada, entao eh realizado a troca entre a casa de destino e a casa da peca*/
 
     aux = percorre_abaixo(m, e, cor_rei, 1, movimento, jogadaAtual);
     if(aux != 0) {
@@ -1144,13 +896,268 @@ matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimen
         return m;
     }
 
+    /*se nao foi encontrado nenhum rei, entao a jogada eh invalida*/
     if(aux == NULL) {
         printf("ATENCAO: Rei nao encontrado!\n");
         exit(1);
     }
-
-    return m;
 }
+
+
+/*funcao que move o peao ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
+matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+    elemento_t * e = matriz_obter_elemento(m, col, linha);
+    elemento_t * aux = NULL;
+    int qtd_casas = 0;
+    char cor_adversario, cor_dele;
+
+    if(movimento == 1 || movimento == 8) { // se for MOVIMENTO NORMAL
+
+        if(cor_peca == 99) { //se for movimento do PEAO BRANCO
+            cor_adversario = 'P';
+            cor_dele = 'B';
+
+            if(linha == 4)  //se o peao pode pular duas casas ainda
+                qtd_casas = 2;    
+            else 
+                qtd_casas = 1;
+            
+            aux = percorre_abaixo(m, e, PEAO_BRANCO, qtd_casas, movimento, jogadaAtual);
+            if(aux != 0) { 
+                aux->macro_peca = aux->cor;
+                aux->peca = ' ';
+                e->macro_peca = PEAO_BRANCO;
+                e->peca = cor_dele;
+
+                //PROMOCAO DO PEAO
+                if(movimento == 8) {
+                    if(jogadaAtual[3] == 'R') {
+                        e->macro_peca = TORRE_BRANCA;
+                    }
+                    else if(jogadaAtual[3] == 'Q') {
+                        e->macro_peca = RAINHA_BRANCA;
+                    }
+                    else if(jogadaAtual[3] == 'B') {
+                        e->macro_peca = BISPO_BRANCO;
+                    }
+                    else if(jogadaAtual[3] == 'N') {
+                        e->macro_peca = CAVALO_BRANCO;
+                    }
+                    else { 
+                        printf("Nao foi possivel realizar a promocao do peao.\n");
+                        exit(1);
+                    }
+                }
+                return m;
+            }
+
+        } else { //se for movimento normal do PEAO PRETO
+            cor_adversario = 'B';
+            cor_dele = 'P';
+
+            if(linha == 3)
+                qtd_casas = 2;
+            else
+                qtd_casas = 1;
+            
+            aux = percorre_cima(m, e, PEAO_PRETO, qtd_casas, movimento, jogadaAtual);
+            if(aux != 0) {
+                aux->macro_peca = aux->cor;
+                aux->peca = ' ';
+                e->macro_peca = PEAO_PRETO;
+                e->peca = cor_dele;
+
+                if(movimento == 8) {
+                    if(jogadaAtual[3] == 'R') {
+                        e->macro_peca = TORRE_PRETA;
+                    }
+                    else if(jogadaAtual[3] == 'Q') {
+                        e->macro_peca = RAINHA_PRETA;
+                    }
+                    else if(jogadaAtual[3] == 'B') {
+                        e->macro_peca = BISPO_PRETO;
+                    }
+                    else if(jogadaAtual[3] == 'N') {
+                        e->macro_peca = CAVALO_PRETO;
+                    }
+                    else { 
+                        printf("Nao foi possivel realizar a promocao do peao.\n");
+                        exit(1);
+                    }
+                }
+                return m;
+            }
+        }
+
+        //verifica se algum peao nao foi encontrado
+        if(aux == NULL) {
+            printf("ATENCAO: Peao nao encontrado!\n");
+            exit(1);
+        }
+    }
+
+    else if(movimento == 4 || movimento == 7) { // se for CAPTURA DE PEAO
+        //primeiro identifica de qual coluna o peao que come vai vir
+
+        if(cor_peca == 99) { //se for jogada de BRANCO
+            cor_adversario = 'P';
+            cor_dele = 'B';
+
+            aux = percorre_diagonalBaixoDireita(m, e, PEAO_BRANCO, 1, movimento, jogadaAtual);
+            if(aux != 0) {
+                if (jogadaAtual[0] == aux->colunaT) {
+                    aux->macro_peca = aux->cor;
+                    aux->peca = ' ';
+                    e->macro_peca = PEAO_BRANCO;
+                    e->peca = cor_dele;
+
+                    //PROMOCAO DE PEAO
+                    if(movimento == 7) {
+                        if(jogadaAtual[5] == 'R') {
+                            e->macro_peca = TORRE_BRANCA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'Q') {
+                            e->macro_peca = RAINHA_BRANCA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'B') {
+                            e->macro_peca = BISPO_BRANCO;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'N') {
+                            e->macro_peca = CAVALO_BRANCO;
+                            return m;
+                        }
+                        else { 
+                            printf("Nao foi possivel realizar a promocao do peao.\n");
+                            exit(1);
+                        }
+                    }
+
+                    return m;
+                }
+            } 
+
+            aux = percorre_diagonalBaixoEsquerda(m, e, PEAO_BRANCO, 1, movimento, jogadaAtual);
+            if(aux != 0) {            
+                if (jogadaAtual[0] == aux->colunaT) {
+                    aux->macro_peca = aux->cor;
+                    aux->peca = ' ';
+                    e->macro_peca = PEAO_BRANCO;
+                    e->peca = cor_dele;
+
+                    //PROMOCAO DE PEAO
+                    if(movimento == 7) {
+                        if(jogadaAtual[5] == 'R') {
+                            e->macro_peca = TORRE_BRANCA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'Q') {
+                            e->macro_peca = RAINHA_BRANCA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'B') {
+                            e->macro_peca = BISPO_BRANCO;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'N') {
+                            e->macro_peca = CAVALO_BRANCO;
+                            return m;
+                        }
+                        else { 
+                            printf("Nao foi possivel realizar a promocao do peao.\n");
+                            exit(1);
+                        }
+                    }
+
+                    return m;
+                }
+            } 
+
+        } else { //senao eh peao PRETO
+            cor_adversario = 'B';
+            cor_dele = 'P';
+
+            aux = percorre_diagonalCimaDireita(m, e, PEAO_PRETO, 1, movimento, jogadaAtual);
+
+            if(aux != 0) {
+                if (jogadaAtual[0] == aux->colunaT) {
+                    aux->macro_peca = aux->cor;
+                    aux->peca = ' ';
+                    e->macro_peca = PEAO_PRETO;
+                    e->peca = cor_dele;
+
+                    //PROMOCAO DE PEAO
+                    if(movimento == 7) {
+                        if(jogadaAtual[5] == 'R') {
+                            e->macro_peca = TORRE_PRETA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'Q') {
+                            e->macro_peca = RAINHA_PRETA;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'B') {
+                            e->macro_peca = BISPO_PRETO;
+                            return m;
+                        }
+                        else if(jogadaAtual[5] == 'N') {
+                            e->macro_peca = CAVALO_PRETO;
+                            return m;
+                        }
+                        else { 
+                            printf("Nao foi possivel realizar a promocao do peao.\n");
+                            exit(1);
+                        }
+                    }
+
+                    return m;
+                }
+            } 
+
+            aux = percorre_diagonalCimaEsquerda(m, e, PEAO_PRETO, 1, movimento, jogadaAtual);
+            if(aux != 0) {
+                if (jogadaAtual[0] == aux->colunaT) {
+                    aux->macro_peca = aux->cor;
+                    aux->peca = ' ';
+                    e->macro_peca = PEAO_PRETO;
+                    e->peca = cor_dele;
+
+                    //PROMOCAO DE PEAO
+                    if(movimento == 7) {
+                        if(jogadaAtual[5] == 'R') {
+                            e->macro_peca = TORRE_PRETA;
+                        }
+                        else if(jogadaAtual[5] == 'Q') {
+                            e->macro_peca = RAINHA_PRETA;
+                        }
+                        else if(jogadaAtual[5] == 'B') {
+                            e->macro_peca = BISPO_PRETO;
+                        }
+                        else if(jogadaAtual[5] == 'N') {
+                            e->macro_peca = CAVALO_PRETO;
+                        }
+                        else { 
+                            printf("Nao foi possivel realizar a promocao do peao.\n");
+                            exit(1);
+                        }
+                    }
+                    return m;
+                }
+            } 
+        }
+        
+    }
+
+    //verifica de nenhum peao foi encontrado
+    if(aux == NULL) {
+        printf("ATENCAO: Peao nao encontrado!\n");
+        exit(1);
+    }
+}
+
+
 
 /*
 o rei BRANCO deve estar na coluna E e a torre BRANCA na coluna H, ambos linha 1
@@ -1213,10 +1220,9 @@ matriz_t * roque_menor(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
+        printf("Roque invalido.\n");
         exit(1);
     }
-
-
 } 
 
 
@@ -1273,6 +1279,7 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
+        printf("Roque invalido.\n");
         exit(1);
     }
 } 
