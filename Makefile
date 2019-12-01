@@ -1,5 +1,5 @@
 CC=gcc
-DEPS=xadrez.h validador.h
+DEPS=xadrez.h validador.h tabuleiro.h movimentos.h
 
 %.o : %.c $(DEPS)
 	$(CC) -o $@ -c $<

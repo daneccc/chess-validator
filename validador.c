@@ -4,35 +4,37 @@
 #include <ctype.h>
 
 #include "validador.h"
+#include "movimentos.h"
 #include "xadrez.h"
 
+/*funcao para verificar a jogada*/
 int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_adversario) {
     identifica_peca(jogadaAtual, m, cor_adversario);
     return 1;
 }
 
 
-/*funcao para identificar peca de acordo com o primeiro caractere*/
+/*funcao que identifica a peca de acordo com o primeiro caractere*/
 void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca) {
     char c = jogadaAtual[0]; //o primeiro caractere vai identificar qual a peca
     
     int linha, coluna, movimento;
 
-
+    /*se 99, entao cor branca, senao cor preta*/
     if(cor_peca == 99)
         printf("\nBrancas jogam!\n");
-    else
+    else 
         printf("\nPretas jogam!\n");
 
 
-    //chama a funcao para identificar o movimento da jogadaAtual
+    /*chama a funcao para identificar o tipo de movimento da jogadaAtual*/
     movimento = identifica_movimento(jogadaAtual); 
 
-    linha = gera_linha(jogadaAtual, movimento);
-    coluna = gera_coluna(jogadaAtual, movimento);
+    linha = gera_linha(jogadaAtual, movimento); /*identifica qual a linha da matriz vai receber a jogada*/
+    coluna = gera_coluna(jogadaAtual, movimento); /*identifica qual a coluna da matriz vai receber a jogada*/
 
 
-    if (islower(c)) { //identifica o PEAO
+    if (islower(c)) { //identifica o PEAO se o primeiro char for letra minuscula
         mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual);
         
     } else {
@@ -73,7 +75,7 @@ void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca) {
     }
 }
 
-
+/*funcao que vai identificar o tipo de movimento que qualquer peca realiza*/
 int identifica_movimento(char *jogadaAtual) {
     /*
         retorna 1 se o movimento for normal
@@ -129,8 +131,7 @@ int identifica_movimento(char *jogadaAtual) {
 }
 
 
-
-
+/*funcao que vai converter a linha representada no vetor jogadaAtual para a linha da matriz*/
 int gera_linha(char *jogadaAtual, int movimento) {
     int linha, i = 0;
 
@@ -152,6 +153,7 @@ int gera_linha(char *jogadaAtual, int movimento) {
 }
 
 
+/*funcao que vai converter a coluna representada no vetor jogadaAtual para a coluna da matriz*/
 int gera_coluna(char *jogadaAtual, int movimento) {
     int coluna, i = 0;
 

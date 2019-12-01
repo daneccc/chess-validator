@@ -4,8 +4,11 @@
 #include <ctype.h>
 
 #include "validador.h"
+#include "movimentos.h"
 #include "xadrez.h"
 
+
+/*funcao que, a partir da casa que vai receber a peca, percorre para baixo procurando a peca do movimento*/
 elemento_t * percorre_abaixo(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -41,6 +44,8 @@ elemento_t * percorre_abaixo(matriz_t * m, elemento_t * e, int cor_peca, int max
     return 0;
 }
 
+
+/*funcao que, a partir da casa que vai receber a peca, percorre para direita procurando a peca do movimento*/
 elemento_t * percorre_direita(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -75,6 +80,8 @@ elemento_t * percorre_direita(matriz_t * m, elemento_t * e, int cor_peca, int ma
     return 0;
 }
 
+
+/*funcao que, a partir da casa que vai receber a peca, percorre para esquerda procurando a peca do movimento*/
 elemento_t * percorre_esquerda(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -110,6 +117,7 @@ elemento_t * percorre_esquerda(matriz_t * m, elemento_t * e, int cor_peca, int m
 }
 
 
+/*funcao que, a partir da casa que vai receber a peca, percorre para cima procurando a peca do movimento*/
 elemento_t * percorre_cima(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -144,6 +152,8 @@ elemento_t * percorre_cima(matriz_t * m, elemento_t * e, int cor_peca, int max_c
     return 0;
 }
 
+
+/*funcao que, a partir da casa que vai receber a peca, percorre para diagonal cima direita procurando a peca do movimento*/
 elemento_t * percorre_diagonalCimaDireita(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -187,6 +197,7 @@ elemento_t * percorre_diagonalCimaDireita(matriz_t * m, elemento_t * e, int cor_
 }
 
 
+/*funcao que, a partir da casa que vai receber a peca, percorre para diagonal cima esquerda procurando a peca do movimento*/
 elemento_t * percorre_diagonalCimaEsquerda(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -230,6 +241,7 @@ elemento_t * percorre_diagonalCimaEsquerda(matriz_t * m, elemento_t * e, int cor
 }
 
 
+/*funcao que, a partir da casa que vai receber a peca, percorre para diagonal baixo esquerda procurando a peca do movimento*/
 elemento_t * percorre_diagonalBaixoEsquerda(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -273,6 +285,7 @@ elemento_t * percorre_diagonalBaixoEsquerda(matriz_t * m, elemento_t * e, int co
 }
 
 
+/*funcao que, a partir da casa que vai receber a peca, percorre para diagonal baixo direita procurando a peca do movimento*/
 elemento_t * percorre_diagonalBaixoDireita(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
@@ -319,16 +332,13 @@ elemento_t * percorre_diagonalBaixoDireita(matriz_t * m, elemento_t * e, int cor
 /*============================================================================================================*/
 /*============================================================================================================*/
 /*============================================================================================================*/
-/*============================================================================================================*/
-/*============================================================================================================*/
-/*============================================================================================================*/
 
 
+/*funcao que move a torre ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
-    elemento_t * e = matriz_obter_elemento(m, col, linha); // VERIFICAR SE TA VAZIO
+    elemento_t * e = matriz_obter_elemento(m, col, linha); //recebe o endereco da casa destino do movimento 
     elemento_t * aux = NULL, * aux1;
-    // int c = col;
-    // int l = linha;
+
     int cor_torre;
     char cor_adversario, cor_dele;
 
@@ -342,13 +352,13 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
         cor_dele = 'P';
     }
 
-    //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
-    if(movimento == 1 || movimento == 2 || movimento == 3) { //se for movimento normal
-        if(e->macro_peca != e->cor) //se a casa nao tiver vazia
+    /*primeiro deve-se checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado*/
+    if(movimento == 1 || movimento == 2 || movimento == 3) { /*se for movimento normal, a casa deve estar vazia*/
+        if(e->macro_peca != e->cor) /*se a casa nao tiver vazia*/
             exit(1);
         
-    } else if (movimento == 4 || movimento == 5 || movimento == 6) { //se for captura
-        if(e->peca != cor_adversario) //se na casa de destino nao tem uma peca adversaria
+    } else if (movimento == 4 || movimento == 5 || movimento == 6) { /*se for captura, a casa deve estar com o adversario*/
+        if(e->peca != cor_adversario) /*se na casa de destino nao tem uma peca adversaria*/
             exit(1); 
     }
 
@@ -388,18 +398,15 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
         return m;
     }
 
-
-    // CASO N CONSIGA MOVER NENHUMA TORRE FECHAR O PROGRAMA
-    // N ESQUECA
+    /*se nenhuma torre for encontrada depois de percorrer todos os lados*/
     if(aux == NULL) {
         printf("ATENCAO: Torre nao encontrada!\n");
         exit(1);
     }
-    return m;
-
 }
 
 
+/*funcao que move o bispo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
 matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
