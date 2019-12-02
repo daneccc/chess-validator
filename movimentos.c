@@ -402,7 +402,7 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
 
     /*se nenhuma torre for encontrada depois de percorrer todos os lados*/
     if(aux == NULL) {
-        printf("ATENCAO: Torre nao encontrada!\n");
+        printf("ATENCAO: Torre nao pode realizar o movimento!\n");
         exit(1);
     }
 }
@@ -476,7 +476,7 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
     }
 
     if(aux == NULL) {
-        printf("ATENCAO: Bispo nao encontrado!\n");
+        printf("ATENCAO: Bispo nao pode realizar o movimento!\n");
         exit(1);
     }
 
@@ -588,7 +588,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
     if(aux == NULL) {
-        printf("ATENCAO: Rainha nao encontrada!\n");
+        printf("ATENCAO: Rainha nao pode realizar o movimento!\n");
         exit(1);
     }
 
@@ -780,7 +780,7 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
     }
 
     if(aux == NULL) {
-        printf("ATENCAO: Cavalo nao encontrado!\n");
+        printf("ATENCAO: Cavalo nao pode realizar o movimento!\n");
         exit(1);
     }
 
@@ -898,7 +898,7 @@ matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimen
 
     /*se nao foi encontrado nenhum rei, entao a jogada eh invalida*/
     if(aux == NULL) {
-        printf("ATENCAO: Rei nao encontrado!\n");
+        printf("ATENCAO: Rei nao pode realizar o movimento!\n");
         exit(1);
     }
 }
@@ -991,7 +991,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
 
         //verifica se algum peao nao foi encontrado
         if(aux == NULL) {
-            printf("ATENCAO: Peao nao encontrado!\n");
+            printf("ATENCAO: Peao nao pode realizar o movimento!\n");
             exit(1);
         }
     }
@@ -1152,7 +1152,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
 
     //verifica de nenhum peao foi encontrado
     if(aux == NULL) {
-        printf("ATENCAO: Peao nao encontrado!\n");
+        printf("ATENCAO: Peao nao pode realizar o movimento!\n");
         exit(1);
     }
 }

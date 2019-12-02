@@ -30,15 +30,15 @@ matriz_t * matriz_criar(int linhas, int colunas) {
             elemento_t * elemento = (elemento_t*) calloc( 1, sizeof(elemento_t) ); //aloca espaco para elemento
 
 
-            if(!inicio) //se o inicio for null, inicio recebe o primeiro elemento
+            if(!inicio) {//se o inicio for null, inicio recebe o primeiro elemento
                 inicio = elemento;
                 elemento->esquerda = NULL;
+            }
             if(temp)
                 temp->direita = elemento;
                 
             elemento->esquerda = temp;
             temp = elemento;
-
         
             if( aux_baixo ) {
                 int i = 0;
@@ -70,6 +70,7 @@ matriz_t * matriz_criar(int linhas, int colunas) {
 
     return m;
 }
+
 
 /*funcao para liberar a matriz*/
 void matriz_destruir(matriz_t * m) {
@@ -119,22 +120,6 @@ void matriz_setar_elemento( matriz_t * m, int col, int linha, int cor, int macro
     e->peca = peca; //recebe um char B se for branca ou char P se for preta
     e->linhaT = linhaT; //armazena a linha da matriz que o elemento se encontra
     e->colunaT = colunaT; //armazena a coluna da matriz que o elemento se encontra
-}
-
-
-/* funcao que printa todos os enderecos que os ponteiros apontam*/
-void matriz_debug( matriz_t * m) {
-    int l, c;
-
-    printf("matriz=%p, colunas=%d, linhas=%d, inicio=%p\n", m, m->colunas, m->linhas, m->inicio );
-
-    for(l = 0; l < m->linhas; l++) {
-        for(c = 0; c < m->colunas; c++) {
-            elemento_t * e = matriz_obter_elemento( m, c, l );
-            printf("[%d][%d] # elemento=%p # abaixo=%p # cima=%p # dir=%p # esq=%p # peca=%c \n", l, c, e, e->abaixo, e->cima, e->direita, e->esquerda, e->peca);
-        }
-    }
-
 }
 
 

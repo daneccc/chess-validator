@@ -8,23 +8,38 @@
 #include "xadrez.h"
 
 /*funcao para verificar a jogada*/
-int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_adversario) {
-    identifica_peca(jogadaAtual, m, cor_adversario);
+int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
+    
+    printf("\n%s\n", jogadaAtual);
+    if(cor_peca == 99) {
+        if(*junk == 1) {//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            printf("Empate. FIM DE JOGO.\n");
+            exit(1);
+        } else if (*junk == 0) {
+            printf("\nPretas vencem. FIM DE JOGO. \n");
+            exit(1);
+        }
+        printf("\n===> Rodada %d:\n", *junk);
+        printf("\nBrancas jogam!\n");
+    }
+    else {
+        if(jogadaAtual[0] == '1') {
+            printf("Brancas vencem. FIM DE JOGO.\n");
+            exit(1);
+        }
+        printf("\nPretas jogam!\n");
+    }
+
+    identifica_peca(jogadaAtual, m, cor_peca, junk);
     return 1;
 }
 
 
 /*funcao que identifica a peca de acordo com o primeiro caractere*/
-void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca) {
+void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
     char c = jogadaAtual[0]; //o primeiro caractere vai identificar qual a peca
     
     int linha, coluna, movimento;
-
-    /*se 99, entao cor branca, senao cor preta*/
-    if(cor_peca == 99)
-        printf("\nBrancas jogam!\n");
-    else 
-        printf("\nPretas jogam!\n");
 
 
     /*chama a funcao para identificar o tipo de movimento da jogadaAtual*/
@@ -34,7 +49,7 @@ void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca) {
     coluna = gera_coluna(jogadaAtual, movimento); /*identifica qual a coluna da matriz vai receber a jogada*/
 
 
-    if (islower(c)) { //identifica o PEAO se o primeiro char for letra minuscula
+    if (c == 'a' || c == 'b' || c == 'c' || c == 'd' ||c == 'e' ||c == 'f' || c == 'g' || c == 'h') { //identifica o PEAO se o primeiro char for letra minuscula
         mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual);
         
     } else {
@@ -127,7 +142,6 @@ int identifica_movimento(char *jogadaAtual) {
                 return 5;
         }
     }
-
 }
 
 
@@ -146,9 +160,9 @@ int gera_linha(char *jogadaAtual, int movimento) {
         } 
     }
 
-    printf("Linha: %c\n", jogadaAtual[i]);
+    printf("Linha: %c ||", jogadaAtual[i]);
     linha = '8' - jogadaAtual[i]; 
-
+    
     return linha;
 }
 
@@ -159,7 +173,7 @@ int gera_coluna(char *jogadaAtual, int movimento) {
 
     if(movimento == 3) //N3f7    Ngg5   R8b7 
         i = 2;
-    if(movimento == 6) //N4xg4
+    if(movimento == 6) //N4xg4   N6xd4
         i = 3;
 
     if(i == 0) {
@@ -169,8 +183,8 @@ int gera_coluna(char *jogadaAtual, int movimento) {
         i--;
     }
 
-    printf("Coluna: %c\n\n", jogadaAtual[i]);
+    printf(" Coluna: %c\n\n", jogadaAtual[i]);
     coluna = (jogadaAtual[i] - 'a');
-  
+    
     return coluna;
 }
