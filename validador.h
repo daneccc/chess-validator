@@ -2,7 +2,7 @@
 
 /*prototipos das funcoes do arquivo validador.c*/
 
-int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk);
+int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char *punct);
 void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk);
 int identifica_movimento(char *jogadaAtual);
 int gera_coluna(char *jogadaAtual, int movimento);

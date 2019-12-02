@@ -8,23 +8,23 @@
 #include "xadrez.h"
 
 /*funcao para verificar a jogada*/
-int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
-    
-    printf("\n%s\n", jogadaAtual);
+int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char *punct) {
+
+    /*verifica se eh fim de jogo e printa na tela algumas informacoes*/
     if(cor_peca == 99) {
-        if(*junk == 1) {//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        if(punct[0] == '/') {
             printf("Empate. FIM DE JOGO.\n");
             exit(1);
         } else if (*junk == 0) {
-            printf("\nPretas vencem. FIM DE JOGO. \n");
+            printf("\n%lc Pretas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
-        printf("\n===> Rodada %d:\n", *junk);
+        printf("\n===> Rodada %d:\n", *junk); //printa a rodada da vez antes da branca jogar
         printf("\nBrancas jogam!\n");
     }
     else {
         if(jogadaAtual[0] == '1') {
-            printf("Brancas vencem. FIM DE JOGO.\n");
+            printf("\n%lc Brancas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
         printf("\nPretas jogam!\n");
@@ -50,37 +50,37 @@ void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
 
 
     if (c == 'a' || c == 'b' || c == 'c' || c == 'd' ||c == 'e' ||c == 'f' || c == 'g' || c == 'h') { //identifica o PEAO se o primeiro char for letra minuscula
-        mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+        mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
         
     } else {
 
         switch(c) {
             case 'R': //identifica a TORRE
-                mover_torre(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+                mover_torre(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
                 break;
 
             case 'N': //identifica o CAVALO
-                mover_cavalo(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+                mover_cavalo(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
                 break;
 
             case 'B': //identifica o BISPO
-                mover_bispo(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+                mover_bispo(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
                 break;
 
             case 'K': //identifica o REI
-                mover_rei(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+                mover_rei(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
                 break;
 
             case 'Q': //identifica a RAINHA
-                mover_rainha(m, coluna, linha, cor_peca, movimento, jogadaAtual);
+                mover_rainha(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
                 break;
 
             case 'O': //identifica o movimento ROQUE
                 if(jogadaAtual[3] == '-') {
-                    roque_maior(m, cor_peca);
+                    roque_maior(m, cor_peca, junk);
                     break;
                 }
-                roque_menor(m, cor_peca);
+                roque_menor(m, cor_peca, junk);
                 break;
 
             default:

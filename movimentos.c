@@ -335,21 +335,23 @@ elemento_t * percorre_diagonalBaixoDireita(matriz_t * m, elemento_t * e, int cor
 
 
 /*funcao que move a torre ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha); //recebe o endereco da casa destino do movimento 
     elemento_t * aux = NULL;
 
     int cor_torre;
-    char cor_adversario, cor_dele;
+    char cor_adversario, cor_dele, *cor;
 
     if(cor_peca == 99) {
         cor_torre = TORRE_BRANCA;
         cor_adversario = 'P';
         cor_dele = 'B';
+        cor = "brancas";
     } else {
         cor_torre = TORRE_PRETA;
         cor_adversario = 'B';
         cor_dele = 'P';
+        cor = "pretas";
     }
 
     /*primeiro deve-se checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado*/
@@ -402,29 +404,31 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
 
     /*se nenhuma torre for encontrada depois de percorrer todos os lados*/
     if(aux == NULL) {
-        printf("ATENCAO: Torre nao pode realizar o movimento!\n");
+        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
         exit(1);
     }
 }
 
 
 /*funcao que move o bispo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
     int l = linha;
     int cor_bispo;
-    char cor_adversario, cor_dele;
+    char cor_adversario, cor_dele, *cor;
 
     if(cor_peca == 99) {
         cor_bispo = BISPO_BRANCO;
         cor_adversario = 'P';
         cor_dele = 'B';
+        cor = "brancas";
     } else {
         cor_bispo = BISPO_PRETO;
         cor_adversario = 'B';
         cor_dele = 'P';
+        cor = "pretas";
     }
 
     //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
@@ -476,7 +480,7 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
     }
 
     if(aux == NULL) {
-        printf("ATENCAO: Bispo nao pode realizar o movimento!\n");
+        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
         exit(1);
     }
 
@@ -484,22 +488,24 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
 
 
 /*funcao que move a rainha ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
     int l = linha;
     int cor_rainha;
-    char cor_adversario, cor_dele;
+    char cor_adversario, cor_dele, *cor;
 
     if(cor_peca == 99) {
         cor_rainha = RAINHA_BRANCA;
         cor_adversario = 'P';
         cor_dele = 'B';
+        cor = "brancas";
     } else {
         cor_rainha = RAINHA_PRETA;
         cor_adversario = 'B';
         cor_dele = 'P';
+        cor = "pretas";
     }
 
     //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
@@ -588,7 +594,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
     if(aux == NULL) {
-        printf("ATENCAO: Rainha nao pode realizar o movimento!\n");
+        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
         exit(1);
     }
 
@@ -596,22 +602,24 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
 /*funcao que move o cavalo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL, * aux1;
     int c = col;
     int l = linha;
     int cor_cavalo;
-    char cor_adversario, cor_dele;
+    char cor_adversario, cor_dele, *cor;
 
     if(cor_peca == 99) {
         cor_cavalo = CAVALO_BRANCO;
         cor_adversario = 'P';
         cor_dele = 'B';
+        cor = "brancas";
     } else {
         cor_cavalo = CAVALO_PRETO;
         cor_adversario = 'B';
         cor_dele = 'P';
+        cor = "pretas";
     }
 
     //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
@@ -780,7 +788,7 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
     }
 
     if(aux == NULL) {
-        printf("ATENCAO: Cavalo nao pode realizar o movimento!\n");
+        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
         exit(1);
     }
 
@@ -794,22 +802,24 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
 /*funcao que move o rei ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
     int l = linha;
     int cor_rei;
-    char cor_adversario, cor_dele;
+    char cor_adversario, cor_dele, *cor;
 
     if(cor_peca == 99) {
         cor_rei = REI_BRANCO;
         cor_adversario = 'P';
         cor_dele = 'B';
+        cor = "brancas";
     } else {
         cor_rei = REI_PRETO;
         cor_adversario = 'B';
         cor_dele = 'P';
+        cor = "pretas";
     }
 
     //primeiro vou checar qual o conteudo da casa de destino de acordo com o movimento a ser realizado
@@ -898,14 +908,14 @@ matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimen
 
     /*se nao foi encontrado nenhum rei, entao a jogada eh invalida*/
     if(aux == NULL) {
-        printf("ATENCAO: Rei nao pode realizar o movimento!\n");
+        printf("Erro na jogada de numero %d das pecas %s.\n", *junk, cor);
         exit(1);
     }
 }
 
 
 /*funcao que move o peao ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual) {
+matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int qtd_casas = 0;
@@ -950,6 +960,11 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
                 }
                 return m;
             }
+            //verifica se algum peao branco nao foi encontrado
+            if(aux == NULL) {
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                exit(1);
+            }
 
         } else { //se for movimento normal do PEAO PRETO
             cor_adversario = 'B';
@@ -987,13 +1002,13 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
                 }
                 return m;
             }
+            //verifica erro
+            if(aux == NULL) {
+                printf("Erro na jogada de numero %d das pecas pretas!\n", *junk);
+                exit(1);
+            }
         }
 
-        //verifica se algum peao nao foi encontrado
-        if(aux == NULL) {
-            printf("ATENCAO: Peao nao pode realizar o movimento!\n");
-            exit(1);
-        }
     }
 
     else if(movimento == 4 || movimento == 7) { // se for CAPTURA DE PEAO
@@ -1074,6 +1089,11 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
                     return m;
                 }
             } 
+            //verifica se algum peao branco nao foi encontrado
+            if(aux == NULL) {
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                exit(1);
+            }
 
         } else { //senao eh peao PRETO
             cor_adversario = 'B';
@@ -1146,15 +1166,15 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
                     return m;
                 }
             } 
+            //verifica se erro
+            if(aux == NULL) {
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                exit(1);
+            }
         }
         
     }
 
-    //verifica de nenhum peao foi encontrado
-    if(aux == NULL) {
-        printf("ATENCAO: Peao nao pode realizar o movimento!\n");
-        exit(1);
-    }
 }
 
 
@@ -1170,7 +1190,7 @@ se g8 e f8 estiverem vazios e e8 for rei e h8 for torre
 o rei preto move para g8
 a torre preta move para f8
 */
-matriz_t * roque_menor(matriz_t * m, int cor_peca) {
+matriz_t * roque_menor(matriz_t * m, int cor_peca, int *junk) {
     //se for jogada da peca BRANCA
     if(cor_peca == 99) {
 
@@ -1194,7 +1214,7 @@ matriz_t * roque_menor(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
-        printf("Roque invalido.\n");
+        printf("Erro na jogada de numero %d das pecas brancas.\n", *junk);
         exit(1);
 
     //se for jogada da peca PRETA
@@ -1220,13 +1240,13 @@ matriz_t * roque_menor(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
-        printf("Roque invalido.\n");
+        printf("Erro na jogada de numero %d das pecas pretas.\n", *junk);
         exit(1);
     }
 } 
 
 
-matriz_t * roque_maior(matriz_t * m, int cor_peca) {
+matriz_t * roque_maior(matriz_t * m, int cor_peca, int *junk) {
     //se for jogada da peca BRANCA
     if(cor_peca == 99) {
 
@@ -1252,7 +1272,7 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
-        printf("Roque invalido.\n");
+        printf("Erro na jogada de numero %d das pecas brancas.\n", *junk);
         exit(1);
 
     //se for jogada da peca PRETA
@@ -1279,7 +1299,7 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca) {
                 return m;
             }
         }
-        printf("Roque invalido.\n");
+        printf("Erro na jogada de numero %d das pecas pretas.\n", *junk);
         exit(1);
     }
 } 

@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     mostrar_tabuleiro(m);
 	
-	char branca[TAM], preta[TAM], jogadaAtual[TAM];
+	char branca[TAM], preta[TAM], jogadaAtual[TAM], punct[1];
 	int junk[1]; /*variavel lixo para armazenar a rodada*/
 
 	FILE *f = fopen(argv[1], "r");
@@ -38,37 +38,32 @@ int main(int argc, char *argv[]) {
         n++;
     }
 
-
 	/*le a linha das jogadas do arquivo e salva no vetor*/
 	while(!feof(f)) {
 		int i;
 
-		fscanf(f, "%d.%s %s", junk, branca, preta);
+		fscanf(f, "%d%c%s %s", junk, punct, branca, preta);
 
-		// getc(stdin); //espera teclar ENTER pra continuar
+		getc(stdin); //espera teclar ENTER pra continuar
 
 
 	 	for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = branca[i];
 		}
         /*passa o valor 99 para identificar que foi uma jogada das brancas*/
-		valida_jogada(jogadaAtual, m, 99, junk);
-
+		valida_jogada(jogadaAtual, m, 99, junk, punct);
 
 		mostrar_tabuleiro(m);
-		// getc(stdin);  //espera teclar ENTER para continuar
-
+		getc(stdin);  //espera teclar ENTER para continuar
 
 		for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = preta[i];
 		}
         /*passa o valor 100 para identificar que foi uma jogada das pretas*/
-        valida_jogada(jogadaAtual, m, 100, junk);
-
+        valida_jogada(jogadaAtual, m, 100, junk, punct);
 
 		mostrar_tabuleiro(m);
 	}
-
 
 	matriz_destruir(m); //destroi a matriz
 	fclose(f); //fecha o arquivo
