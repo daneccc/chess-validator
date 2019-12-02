@@ -1303,4 +1303,3 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca, int *junk) {
         exit(1);
     }
 } 
-

@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		fscanf(f, "%d%c%s %s", junk, punct, branca, preta);
 
 		getc(stdin); //espera teclar ENTER pra continuar
-
+		system("clear");
 
 	 	for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = branca[i];
@@ -54,7 +54,9 @@ int main(int argc, char *argv[]) {
 		valida_jogada(jogadaAtual, m, 99, junk, punct);
 
 		mostrar_tabuleiro(m);
+
 		getc(stdin);  //espera teclar ENTER para continuar
+		system("clear");
 
 		for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = preta[i];

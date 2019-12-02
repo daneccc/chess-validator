@@ -28,6 +28,7 @@ int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char
             printf("\n%lc Brancas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
+            printf("\n===> Rodada %d:\n", *junk); //printa a rodada da vez antes da branca jogar
         printf("\nPretas jogam!\n");
     }
 
