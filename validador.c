@@ -7,6 +7,7 @@
 #include "movimentos.h"
 #include "xadrez.h"
 
+
 /*funcao para verificar a jogada*/
 int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char *punct) {
 
@@ -37,10 +38,14 @@ int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char
 
 /*funcao que identifica a peca de acordo com o primeiro caractere*/
 void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
-    char c = jogadaAtual[0]; //o primeiro caractere vai identificar qual a peca
+    char c = jogadaAtual[0], *cor; //o primeiro caractere vai identificar qual a peca
     
     int linha, coluna, movimento;
 
+    if(cor_peca == 99)
+        cor = "brancas";
+    else
+        cor = "pretas";
 
     /*chama a funcao para identificar o tipo de movimento da jogadaAtual*/
     movimento = identifica_movimento(jogadaAtual); 
@@ -84,11 +89,12 @@ void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
                 break;
 
             default:
-                printf("A peca eh ivalida.\n");
+                printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
                 exit(1);                
         }
     }
 }
+
 
 /*funcao que vai identificar o tipo de movimento que qualquer peca realiza*/
 int identifica_movimento(char *jogadaAtual) {
