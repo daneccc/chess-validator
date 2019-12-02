@@ -8,35 +8,59 @@
 #include "xadrez.h"
 
 
+/* LOGICA PARA AS FUNCOES PERCORRE:
+    inicia um ponteiro auxiliar
+    faz o aux receber o endereco da direcao que ele quer pecorrer para encontrar a peca
+
+    enquanto o aux nao for nulo (nao sair do tabuleiro) e o numero maximo de casas que uma peca percorreria para o destino final nao for atingido
+        verifica se a macro_peca do casa(struct) apontada eh a peca que foi passada na funcao, se sim:
+            verifica o tipo de movimento:
+            se for movimento normal (movimento 1, 4, 7 ou 8)
+                retorna o auxiliar
+            se for movimento com ambiguidade de linha
+                verifica se a o campo que armazena a linha da casa(struct) contem a mesma linha que foi passada na jogada ambigua
+                    se sim, retorna o auxiliar
+            se for movimento com ambiguidade de coluna
+                verifica se o campo que armazena a coluna da casa(struct) contem a mesma coluna que foi passada na jogada ambigua
+                    se sim, retorna o auxiliar
+
+        se a casa(struct) nao estiver vazia, para de percorrer e retorna 0
+        se nao retornar nada ate o momento, o auxiliar recebe o proximo endereco da direcao percorrida e casas_percorridas eh incrementado
+        entra no laco while ate que alguma condicao nao seja satisfeita
+    retorna 0 se nada for encontrado
+*/
+
+
 /*funcao que, a partir da casa que vai receber a peca, percorre para baixo procurando a peca do movimento*/
 elemento_t * percorre_abaixo(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
 
-    aux = e->abaixo; 
+    aux = e->abaixo; /*comeca apontando para o elemento que ta abaixo da casa de destino*/
 
+    /*enquanto o aux for diferente de null(nao sair do tabuleiro) e o maximo de casas nao for atingido*/
     while(aux != NULL && casas_percorridas < max_casas){
         if(aux->macro_peca == cor_peca) { //se for a peca procurada
-            if(movimento == 1 || movimento == 4 || movimento == 7 || movimento == 8) {
+            if(movimento == 1 || movimento == 4 || movimento == 7 || movimento == 8) { 
                 return aux;
             }
 
             else if(movimento == 3 || movimento == 6) {
-                if(aux->linhaT == jogadaAtual[1])
+                if(aux->linhaT == jogadaAtual[1]) /*checa a o campo linha da struct para comparar com a linha passada no vetor ambiguo*/
                     return aux;
                 else return 0;
             } 
 
             else if(movimento == 2 || movimento == 5) {
-                if(aux->colunaT == jogadaAtual[1])
+                if(aux->colunaT == jogadaAtual[1]) /*checa o campo coluna da struct para comparar com a linha passada no vetor ambiguo*/
                     return aux;
                 else return 0;
             }
             
-        } else if(aux->macro_peca != aux->cor) {
+        } else if(aux->macro_peca != aux->cor) { /*se a casa em analise nao ta vazia e chegou ate aqui, entao eh pq ta ocupada com uma peca diferente, entao retorna 0*/ 
             return 0;
         }
-        //continua percorrendo pra baixo
+        /*continua percorrendo pra baixo*/
         aux = aux->abaixo;
         casas_percorridas++;
     }
@@ -47,10 +71,10 @@ elemento_t * percorre_abaixo(matriz_t * m, elemento_t * e, int cor_peca, int max
 
 /*funcao que, a partir da casa que vai receber a peca, percorre para direita procurando a peca do movimento*/
 elemento_t * percorre_direita(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
-    elemento_t * aux = NULL;
-    int casas_percorridas = 0;
+    elemento_t * aux = NULL; 
+    int casas_percorridas = 0; 
 
-    aux = e->direita;
+    aux = e->direita; 
 
     while(aux != NULL && casas_percorridas < max_casas){
         if(aux->macro_peca == cor_peca) {
@@ -108,7 +132,7 @@ elemento_t * percorre_esquerda(matriz_t * m, elemento_t * e, int cor_peca, int m
         } else if(aux->macro_peca != aux->cor) {
             return 0;
         }
-        //continua percorrendo pra esquerda
+        /*continua percorrendo pra esquerda*/
         aux = aux->esquerda;
         casas_percorridas++;
     }
@@ -130,8 +154,7 @@ elemento_t * percorre_cima(matriz_t * m, elemento_t * e, int cor_peca, int max_c
                 return aux;
             }
             else if(movimento == 3 || movimento == 6) {
-                // if((aux->linhaT + '0') == jogadaAtual[1])
-                if(aux->linhaT == jogadaAtual[1]) //AAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaa
+                if(aux->linhaT == jogadaAtual[1])
                     return aux;
                 else return 0;
             } 
@@ -144,7 +167,7 @@ elemento_t * percorre_cima(matriz_t * m, elemento_t * e, int cor_peca, int max_c
         } else if(aux->macro_peca != aux->cor) {
             return 0;
         }
-        //continua percorrendo pra cima
+        /*continua percorrendo pra cima*/
         aux = aux->cima;
         casas_percorridas++;
     }
@@ -153,17 +176,26 @@ elemento_t * percorre_cima(matriz_t * m, elemento_t * e, int cor_peca, int max_c
 }
 
 
+/*
+A partir daqui, teremos as funcoes que percorrem em DIAGONAL. A diferenca eh que agora iremos apontar duas vezes para realizar a diagonal.
+Por isso, faz-se necessario que seja verificado se cada ponteiro aponta pra NULL antes de apontar pro proximo que forma a diagonal,
+pois esse nao foi incializado, visto que o anterior a ele eh NULL, evitando falha de segmentacao.
+*/
+
+
 /*funcao que, a partir da casa que vai receber a peca, percorre para diagonal cima direita procurando a peca do movimento*/
 elemento_t * percorre_diagonalCimaDireita(matriz_t * m, elemento_t * e, int cor_peca, int max_casas, int movimento, char *jogadaAtual) {
     elemento_t * aux = NULL;
     int casas_percorridas = 0;
 
-    // aux = e->cima->direita;
-    aux = e->cima;
+    
+    /*Como seria se nao houvesse falha de segmentacao: aux = e->cima->direita; */
+    aux = e->cima; /*aqui, recemento o primeiro ponteiro para verificar*/
     if(aux != NULL) {
-        aux = aux->direita;
+        aux = aux->direita; /*se o ponteiro nao foi nulo, entao o aux recebe o proximo que forma a diagonal*/
     }
 
+    /*agora checaremos se o ponteiro que forma diagonal eh nulo, se nao for, entra no while e executa a mesma logica das funcoes anteriores*/
     while(aux != NULL && casas_percorridas < max_casas) {
         if(aux->macro_peca == cor_peca) {
             if(movimento == 1 || movimento == 4 || movimento == 7 || movimento == 8) {
@@ -187,7 +219,7 @@ elemento_t * percorre_diagonalCimaDireita(matriz_t * m, elemento_t * e, int cor_
         //continua percorrendo pra cima direita (diagonal)
         // aux = aux->cima->direita;
         aux = aux->cima;
-        if(aux != NULL) {
+        if(aux != NULL) { /*primeiro checa se eh nulo para depois continuar a receber o movimento de diagonal*/
             aux = aux->direita;
         }
         casas_percorridas++;
@@ -330,24 +362,26 @@ elemento_t * percorre_diagonalBaixoDireita(matriz_t * m, elemento_t * e, int cor
 
 
 /*============================================================================================================*/
-/*============================================================================================================*/
+/*======================================FUNCOES PARA MOVER AS PECAS===========================================*/
 /*============================================================================================================*/
 
 
 /*funcao que move a torre ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
-    elemento_t * e = matriz_obter_elemento(m, col, linha); //recebe o endereco da casa destino do movimento 
+matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
+    elemento_t * e = matriz_obter_elemento(m, col, linha); //recebe o endereco da CASA DESTINO do movimento 
     elemento_t * aux = NULL;
 
-    int cor_torre;
+    /*variaveis auxiliares*/
+    int cor_torre; /*recebe a macro dependendo da cor da jogada*/
     char cor_adversario, cor_dele, *cor;
 
-    if(cor_peca == 99) {
+
+    if(cor_peca == 99) { /*se for jogada das BRANCAS*/
         cor_torre = TORRE_BRANCA;
         cor_adversario = 'P';
         cor_dele = 'B';
         cor = "brancas";
-    } else {
+    } else { /*se for jogada das PRETAS*/
         cor_torre = TORRE_PRETA;
         cor_adversario = 'B';
         cor_dele = 'P';
@@ -404,14 +438,14 @@ matriz_t * mover_torre(matriz_t * m, int col, int linha, int cor_peca, int movim
 
     /*se nenhuma torre for encontrada depois de percorrer todos os lados*/
     if(aux == NULL) {
-        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
+        printf("Erro na jogada de numero %d das pecas %s!\n", *rodada, cor);
         exit(1);
     }
 }
 
 
 /*funcao que move o bispo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
+matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
@@ -480,7 +514,7 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
     }
 
     if(aux == NULL) {
-        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
+        printf("Erro na jogada de numero %d das pecas %s!\n", *rodada, cor);
         exit(1);
     }
 
@@ -488,7 +522,7 @@ matriz_t * mover_bispo(matriz_t * m, int col, int linha, int cor_peca, int movim
 
 
 /*funcao que move a rainha ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
+matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
@@ -594,7 +628,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
     if(aux == NULL) {
-        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
+        printf("Erro na jogada de numero %d das pecas %s!\n", *rodada, cor);
         exit(1);
     }
 
@@ -602,7 +636,7 @@ matriz_t * mover_rainha(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
 /*funcao que move o cavalo ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
+matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL, * aux1;
     int c = col;
@@ -788,7 +822,7 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
     }
 
     if(aux == NULL) {
-        printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
+        printf("Erro na jogada de numero %d das pecas %s!\n", *rodada, cor);
         exit(1);
     }
 
@@ -802,7 +836,7 @@ matriz_t * mover_cavalo(matriz_t * m, int col, int linha, int cor_peca, int movi
 
 
 /*funcao que move o rei ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
+matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int c = col;
@@ -908,14 +942,14 @@ matriz_t * mover_rei(matriz_t * m, int col, int linha, int cor_peca, int movimen
 
     /*se nao foi encontrado nenhum rei, entao a jogada eh invalida*/
     if(aux == NULL) {
-        printf("Erro na jogada de numero %d das pecas %s.\n", *junk, cor);
+        printf("Erro na jogada de numero %d das pecas %s.\n", *rodada, cor);
         exit(1);
     }
 }
 
 
 /*funcao que move o peao ao receber a linha e coluna de destino na matriz, se eh jogada da branca ou preta, o tipo de movimento, e o vetor da jogada para analise*/
-matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *junk) {
+matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movimento, char *jogadaAtual, int *rodada) {
     elemento_t * e = matriz_obter_elemento(m, col, linha);
     elemento_t * aux = NULL;
     int qtd_casas = 0;
@@ -962,7 +996,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
             }
             //verifica se algum peao branco nao foi encontrado
             if(aux == NULL) {
-                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *rodada);
                 exit(1);
             }
 
@@ -1004,7 +1038,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
             }
             //verifica erro
             if(aux == NULL) {
-                printf("Erro na jogada de numero %d das pecas pretas!\n", *junk);
+                printf("Erro na jogada de numero %d das pecas pretas!\n", *rodada);
                 exit(1);
             }
         }
@@ -1091,7 +1125,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
             } 
             //verifica se algum peao branco nao foi encontrado
             if(aux == NULL) {
-                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *rodada);
                 exit(1);
             }
 
@@ -1168,7 +1202,7 @@ matriz_t * mover_peao(matriz_t * m, int col, int linha, int cor_peca, int movime
             } 
             //verifica se erro
             if(aux == NULL) {
-                printf("Erro na jogada de numero %d das pecas brancas!\n", *junk);
+                printf("Erro na jogada de numero %d das pecas brancas!\n", *rodada);
                 exit(1);
             }
         }
@@ -1190,7 +1224,7 @@ se g8 e f8 estiverem vazios e e8 for rei e h8 for torre
 o rei preto move para g8
 a torre preta move para f8
 */
-matriz_t * roque_menor(matriz_t * m, int cor_peca, int *junk) {
+matriz_t * roque_menor(matriz_t * m, int cor_peca, int *rodada) {
     //se for jogada da peca BRANCA
     if(cor_peca == 99) {
 
@@ -1214,7 +1248,7 @@ matriz_t * roque_menor(matriz_t * m, int cor_peca, int *junk) {
                 return m;
             }
         }
-        printf("Erro na jogada de numero %d das pecas brancas.\n", *junk);
+        printf("Erro na jogada de numero %d das pecas brancas.\n", *rodada);
         exit(1);
 
     //se for jogada da peca PRETA
@@ -1240,13 +1274,13 @@ matriz_t * roque_menor(matriz_t * m, int cor_peca, int *junk) {
                 return m;
             }
         }
-        printf("Erro na jogada de numero %d das pecas pretas.\n", *junk);
+        printf("Erro na jogada de numero %d das pecas pretas.\n", *rodada);
         exit(1);
     }
 } 
 
 
-matriz_t * roque_maior(matriz_t * m, int cor_peca, int *junk) {
+matriz_t * roque_maior(matriz_t * m, int cor_peca, int *rodada) {
     //se for jogada da peca BRANCA
     if(cor_peca == 99) {
 
@@ -1272,7 +1306,7 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca, int *junk) {
                 return m;
             }
         }
-        printf("Erro na jogada de numero %d das pecas brancas.\n", *junk);
+        printf("Erro na jogada de numero %d das pecas brancas.\n", *rodada);
         exit(1);
 
     //se for jogada da peca PRETA
@@ -1299,7 +1333,7 @@ matriz_t * roque_maior(matriz_t * m, int cor_peca, int *junk) {
                 return m;
             }
         }
-        printf("Erro na jogada de numero %d das pecas pretas.\n", *junk);
+        printf("Erro na jogada de numero %d das pecas pretas.\n", *rodada);
         exit(1);
     }
 } 

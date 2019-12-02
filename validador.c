@@ -9,36 +9,39 @@
 
 
 /*funcao para verificar a jogada*/
-int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk, char *punct) {
+int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *rodada, char *punct) {
 
     /*verifica se eh fim de jogo e printa na tela algumas informacoes*/
     if(cor_peca == 99) {
         if(punct[0] == '/') {
+            mostrar_tabuleiro(m);
             printf("Empate. FIM DE JOGO.\n");
             exit(1);
-        } else if (*junk == 0) {
+        } else if (*rodada == 0) {
+            mostrar_tabuleiro(m);
             printf("\n%lc Pretas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
-        printf("\n===> Rodada %d:\n", *junk); //printa a rodada da vez antes da branca jogar
+        printf("\n===> RODADA %d:\n", *rodada); //printa a rodada da vez antes da branca jogar
         printf("\nBrancas jogam!\n");
     }
     else {
         if(jogadaAtual[0] == '1') {
+            mostrar_tabuleiro(m);
             printf("\n%lc Brancas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
-            printf("\n===> Rodada %d:\n", *junk); //printa a rodada da vez antes da branca jogar
+            printf("\n===> RODADA %d:\n", *rodada); //printa a rodada da vez antes da branca jogar
         printf("\nPretas jogam!\n");
     }
 
-    identifica_peca(jogadaAtual, m, cor_peca, junk);
+    identifica_peca(jogadaAtual, m, cor_peca, rodada);
     return 1;
 }
 
 
 /*funcao que identifica a peca de acordo com o primeiro caractere*/
-void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
+void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *rodada) {
     char c = jogadaAtual[0], *cor; //o primeiro caractere vai identificar qual a peca
     
     int linha, coluna, movimento;
@@ -54,43 +57,43 @@ void identifica_peca(char *jogadaAtual, matriz_t * m, int cor_peca, int *junk) {
     linha = gera_linha(jogadaAtual, movimento); /*identifica qual a linha da matriz vai receber a jogada*/
     coluna = gera_coluna(jogadaAtual, movimento); /*identifica qual a coluna da matriz vai receber a jogada*/
 
-
+    /*na condicao abaixo, verificamos o primeiro char do vetor jogada para chamar a funcao de mover a peca*/
     if (c == 'a' || c == 'b' || c == 'c' || c == 'd' ||c == 'e' ||c == 'f' || c == 'g' || c == 'h') { //identifica o PEAO se o primeiro char for letra minuscula
-        mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+        mover_peao(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
         
     } else {
 
         switch(c) {
             case 'R': //identifica a TORRE
-                mover_torre(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+                mover_torre(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
                 break;
 
             case 'N': //identifica o CAVALO
-                mover_cavalo(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+                mover_cavalo(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
                 break;
 
             case 'B': //identifica o BISPO
-                mover_bispo(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+                mover_bispo(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
                 break;
 
             case 'K': //identifica o REI
-                mover_rei(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+                mover_rei(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
                 break;
 
             case 'Q': //identifica a RAINHA
-                mover_rainha(m, coluna, linha, cor_peca, movimento, jogadaAtual, junk);
+                mover_rainha(m, coluna, linha, cor_peca, movimento, jogadaAtual, rodada);
                 break;
 
             case 'O': //identifica o movimento ROQUE
                 if(jogadaAtual[3] == '-') {
-                    roque_maior(m, cor_peca, junk);
+                    roque_maior(m, cor_peca, rodada);
                     break;
                 }
-                roque_menor(m, cor_peca, junk);
+                roque_menor(m, cor_peca, rodada);
                 break;
 
             default:
-                printf("Erro na jogada de numero %d das pecas %s!\n", *junk, cor);
+                printf("Erro na identificacao de peca da jogada de numero %d das pecas %s!\n", *rodada, cor);
                 exit(1);                
         }
     }
@@ -130,7 +133,7 @@ int identifica_movimento(char *jogadaAtual) {
       
     }
 
-    else {
+    else { //SE A JOGADA FOR DO RESTO DAS PECAS
         if(isdigit(c2)) { //entao eh tipo Nh3 ou Kd5
             return 1;
         }
@@ -156,19 +159,19 @@ int identifica_movimento(char *jogadaAtual) {
 int gera_linha(char *jogadaAtual, int movimento) {
     int linha, i = 0;
 
-    if(movimento == 3)  //N3f7
+    if(movimento == 3)  /*se for movimento tipo N3f7, entao a linha ta na posicao 3 do vetor*/
         i = 3;
-    if(movimento == 6)  //N4xg4
+    if(movimento == 6)  /*se for movimento tipo N4xg4, entao a linha ta na posicao 4 do vetor*/
         i = 4;
 
-    if(i == 0) {
+    if(i == 0) { /*no resto dos casos, entra no while ate achar um digito*/
         while(!isdigit(jogadaAtual[i])) {
             i++;
         } 
     }
 
-    printf("Linha: %c ||", jogadaAtual[i]);
-    linha = '8' - jogadaAtual[i]; 
+    printf("Linha: %c ||", jogadaAtual[i]); /*printa a linha no console*/
+    linha = '8' - jogadaAtual[i]; /*transforma o digito char em int*/
     
     return linha;
 }
@@ -177,21 +180,21 @@ int gera_linha(char *jogadaAtual, int movimento) {
 /*funcao que vai converter a coluna representada no vetor jogadaAtual para a coluna da matriz*/
 int gera_coluna(char *jogadaAtual, int movimento) {
     int coluna, i = 0;
-
+    /*segue a mesma logica da funcao anterior*/
     if(movimento == 3) //N3f7    Ngg5   R8b7 
         i = 2;
     if(movimento == 6) //N4xg4   N6xd4
         i = 3;
 
-    if(i == 0) {
+    if(i == 0) { //resto dos movimentos
         while(!isdigit(jogadaAtual[i])) {
             i++;
         }
-        i--;
+        i--; /*o indice i recebe a posicao anterior ao digito, que representa a coluna*/
     }
 
     printf(" Coluna: %c\n\n", jogadaAtual[i]);
-    coluna = (jogadaAtual[i] - 'a');
+    coluna = (jogadaAtual[i] - 'a'); /*transforma a letra char que representa a coluna no tabuleiro em int que vai representar a coluna na matriz*/
     
     return coluna;
 }

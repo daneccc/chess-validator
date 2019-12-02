@@ -13,11 +13,12 @@ int main(int argc, char *argv[]) {
 	matriz_t * m = matriz_criar(8, 8); //chama a funcao para criar uma matriz 8x8
 
 	iniciar_tabuleiro(m);
-
+	system("clear");
+	printf("\n===> Tabuleiro inicial:\n\n");
     mostrar_tabuleiro(m);
 	
 	char branca[TAM], preta[TAM], jogadaAtual[TAM], punct[1];
-	int junk[1]; /*variavel lixo para armazenar a rodada*/
+	int rodada[1]; /*variavel lixo para armazenar a rodada*/
 
 	FILE *f = fopen(argv[1], "r");
 
@@ -42,7 +43,7 @@ int main(int argc, char *argv[]) {
 	while(!feof(f)) {
 		int i;
 
-		fscanf(f, "%d%c%s %s", junk, punct, branca, preta);
+		fscanf(f, "%d%c%s %s", rodada, punct, branca, preta);
 
 		getc(stdin); //espera teclar ENTER pra continuar
 		system("clear");
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
 			jogadaAtual[i] = branca[i];
 		}
         /*passa o valor 99 para identificar que foi uma jogada das brancas*/
-		valida_jogada(jogadaAtual, m, 99, junk, punct);
+		valida_jogada(jogadaAtual, m, 99, rodada, punct);
 
 		mostrar_tabuleiro(m);
 
@@ -62,7 +63,7 @@ int main(int argc, char *argv[]) {
 			jogadaAtual[i] = preta[i];
 		}
         /*passa o valor 100 para identificar que foi uma jogada das pretas*/
-        valida_jogada(jogadaAtual, m, 100, junk, punct);
+        valida_jogada(jogadaAtual, m, 100, rodada, punct);
 
 		mostrar_tabuleiro(m);
 	}
