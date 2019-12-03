@@ -15,7 +15,7 @@ int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *rodada, ch
     if(cor_peca == 99) {
         if(punct[0] == '/') {
             mostrar_tabuleiro(m);
-            printf("Empate. FIM DE JOGO.\n");
+            printf("\nEmpate. FIM DE JOGO.\n");
             exit(1);
         } else if (*rodada == 0) {
             mostrar_tabuleiro(m);
@@ -31,7 +31,7 @@ int valida_jogada(char *jogadaAtual, matriz_t * m, int cor_peca, int *rodada, ch
             printf("\n%lc Brancas vencem. FIM DE JOGO. %lc\n", 0x2605, 0x2605);
             exit(1);
         }
-            printf("\n===> RODADA %d:\n", *rodada); //printa a rodada da vez antes da branca jogar
+        printf("\n===> RODADA %d:\n", *rodada); //printa a rodada da vez antes da branca jogar
         printf("\nPretas jogam!\n");
     }
 

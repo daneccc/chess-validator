@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[]) {
 
-	matriz_t * m = matriz_criar(8, 8); //chama a funcao para criar uma matriz 8x8
+	matriz_t * m = matriz_criar(8, 8); /*chama a funcao para criar uma matriz 8x8*/
 
 	iniciar_tabuleiro(m);
 	system("clear");
@@ -45,26 +45,26 @@ int main(int argc, char *argv[]) {
 
 		fscanf(f, "%d%c%s %s", rodada, punct, branca, preta);
 
-		getc(stdin); //espera teclar ENTER pra continuar
+		getc(stdin); /*espera teclar ENTER pra continuar*/
 		system("clear");
 
 	 	for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = branca[i];
 		}
+
         /*passa o valor 99 para identificar que foi uma jogada das brancas*/
 		valida_jogada(jogadaAtual, m, 99, rodada, punct);
-
 		mostrar_tabuleiro(m);
 
-		getc(stdin);  //espera teclar ENTER para continuar
+		getc(stdin);  /*espera teclar ENTER para continuar*/
 		system("clear");
 
 		for(i = 0; i < TAM; ++i) {
 			jogadaAtual[i] = preta[i];
 		}
+
         /*passa o valor 100 para identificar que foi uma jogada das pretas*/
         valida_jogada(jogadaAtual, m, 100, rodada, punct);
-
 		mostrar_tabuleiro(m);
 	}
 
