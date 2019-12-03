@@ -1,15 +1,3 @@
-/*
-Codigo escrito em C para a disciplina de Programacao 2019.2 feito por:
-
-Daniele Cavalcante Campos Frota - 414624
-Danilo Carneiro Freire de Castro - 470077
-
-Inicialmente, trabalhamos em conjunto na criação da estrutura de dados e leitura do arquivo, bem como esse seria tratado.
-No decorrer das necessidades, fomos definindo as funcoes basicas que deveriam ser implementadas para inciar os testes e assim avancando para casos mais complexos.
-Primeiro foi pensado em uma logica que os dois deveriam seguir pra programar semelhante nas funcoes de percorrer as direcoes e mover pecas.
-Cada um foi pegando uma funcao ainda nao implementada. Nos casos de falhas de segmentacao ou movimentos inesperados, nos reuniamos no LEC para discutir e corrigir.
-Ou seja, as funcoes foram bem divididas para os dois. A parte final de modularizar, criar o Makefile e documentar tambem foi feito em conjunto.
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +16,7 @@ int main(int argc, char *argv[]) {
 	iniciar_tabuleiro(m);
 	system("clear");
 	printf("\n===> Tabuleiro inicial:\n\n");
-    mostrar_tabuleiro(m);
+        mostrar_tabuleiro(m);
 	
 	char branca[TAM], preta[TAM], jogadaAtual[TAM], punct[1];
 	int rodada[1]; /*variavel lixo para armazenar a rodada*/
